@@ -5,13 +5,12 @@ import prisma from "@/lib/db";
 export default async function EditorPage({ params, searchParams }: {
 	params: Promise<{ course_name: string, id: string[] }>,
 	searchParams: Promise<{
-		initialTitle: string,
 		initialContent: string,
 	}>
 }) {
 
 	const { course_name, id } = await params;
-	const { initialTitle, initialContent } = await searchParams;
+	const { initialContent } = await searchParams;
 
 	const data = await prisma.post.findFirst({
 		where: {
@@ -34,20 +33,17 @@ export default async function EditorPage({ params, searchParams }: {
 
 					if (password != process.env.ROOT_PASSWORD) {
 
-						console.log("HERE");
-						redirect(`/editor/${course_name}/${id.join("/")}?initialTitle=${encodeURIComponent(initialTitle)}&initialContent=${encodeURIComponent(initialContent)}`);
+						redirect(`/editor/${course_name}/${id.join("/")}?initialContent=${encodeURIComponent(initialContent)}`);
 
 					}
 
 					if (hasData) {
 
-						const title = data.get("title");
 						const content = data.get("content");
 
-						if (typeof title !== "string" || typeof content !== "string") {
+						if (typeof content !== "string") {
 
-							console.log("HERE2");
-							redirect(`/editor/${course_name}/${id.join("/")}?initialTitle=${encodeURIComponent(initialTitle)}&initialContent=${encodeURIComponent(initialContent)}`);
+							redirect(`/editor/${course_name}/${id.join("/")}?initialContent=${encodeURIComponent(initialContent)}`);
 
 						}
 
@@ -56,7 +52,6 @@ export default async function EditorPage({ params, searchParams }: {
 								id: postId
 							},
 							data: {
-								title,
 								content
 							}
 						});
@@ -65,13 +60,11 @@ export default async function EditorPage({ params, searchParams }: {
 
 					} else {
 
-						const title = data.get("title");
 						const content = data.get("content");
 
-						if (typeof title !== "string" || typeof content !== "string") {
+						if (typeof content !== "string") {
 
-							console.log("HERE3");
-							redirect(`/editor/${course_name}/${id.join("/")}?initialTitle=${encodeURIComponent(initialTitle)}&initialContent=${encodeURIComponent(initialContent)}`);
+							redirect(`/editor/${course_name}/${id.join("/")}?initialContent=${encodeURIComponent(initialContent)}`);
 
 						}
 
@@ -79,7 +72,6 @@ export default async function EditorPage({ params, searchParams }: {
 							data: {
 								courseId: course_name,
 								path: id.join("/"),
-								title,
 								content,
 							}
 						});
@@ -93,13 +85,6 @@ export default async function EditorPage({ params, searchParams }: {
 		>
 
 			<div style={{ height: "4rem" }}>
-
-				<input type="text" style={{
-					display: "inline-block",
-					margin: "1rem",
-					height: "2rem",
-					padding: "0 .5rem"
-				}} placeholder="タイトル" name="title" defaultValue={initialTitle} />
 
 				<input type="password" style={{
 					display: "inline-block",
