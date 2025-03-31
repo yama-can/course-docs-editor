@@ -1,9 +1,16 @@
 import Markdown from "@/components/markdown";
 import prisma from "@/lib/db";
+import { notFound } from "next/navigation";
 
 export default async function ListPage({ params }: { params: Promise<{ password: string }> }) {
 
 	const { password } = await params;
+
+	if (password != process.env.ROOT_PASSWORD) {
+
+		notFound();
+
+	}
 
 	const posts = await prisma.post.findMany();
 
