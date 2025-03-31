@@ -79,6 +79,7 @@ export default function Editor({ initialValue }: { initialValue: string }) {
 					}
 					style={{ width: "calc(100% - 1rem)", height: "calc(100% - 1rem)", padding: "0.5rem", border: "none", outline: "none", fontSize: "14pt", lineHeight: 1.5, resize: "none" }}
 					name="content"
+					defaultValue={initialValue}
 				>
 				</textarea>
 
