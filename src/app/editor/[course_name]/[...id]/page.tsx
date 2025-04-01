@@ -86,6 +86,7 @@ export default async function EditorPage({ params, searchParams }: {
 								courseId: course_name,
 								path: id.join("/"),
 								content,
+								requireing: parents.split(",").map((x) => x.trim()).filter((x) => x.length > 0),
 								short_name,
 								doc_level: level as level_type,
 							}
