@@ -155,7 +155,7 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 				<span className="material-symbols-outlined" style={{ top: "-9rem" }} onClick={() => { setZoom(zoom * 1.1); }}>zoom_in</span>
 				<span className="material-symbols-outlined" style={{ top: "-6rem" }} onClick={() => { setZoom(zoom * 0.9); }}>zoom_out</span>
 				<span className="material-symbols-outlined" style={{ top: "-3rem" }} onClick={() => { setOffsetX(0); setOffsetY(0); setZoom(1); }}>center_focus_strong</span>
-				<span className="material-symbols-outlined" style={{ top: "-0rem" }} onClick={() => { window.open(`/course/${course_name}/milestone`, "_new") }}>fullscreen</span>
+				<span className="material-symbols-outlined" style={{ top: "-0rem" }} onClick={() => { window.open(`/course/${course_name}/milestone?root_page=${root_page}`, "_new") }}>fullscreen</span>
 			</div>
 			<svg
 				style={{
