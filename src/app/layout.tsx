@@ -2,7 +2,6 @@
 
 import { Source_Code_Pro, Readex_Pro, Inter } from "next/font/google";
 import localFont from 'next/font/local'
-import hljs from "highlight.js";
 
 const sourceCodePro = Source_Code_Pro({
   subsets: ["latin"],
@@ -38,12 +37,23 @@ const consola = localFont({
 
 import layout from "./layout.module.scss";
 import "./globals.scss";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  useEffect(() => {
+
+    document.addEventListener('wheel', function (event) {
+      if (event.ctrlKey) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+  });
 
   return (
 

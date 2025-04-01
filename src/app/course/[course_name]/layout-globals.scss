@@ -1,0 +1,15 @@
+body:has(.no-scrollbar)::-webkit-scrollbar {
+
+	display: none;
+
+}
+
+body:has(.no-padding) {
+
+	.course-layout {
+
+		width: 100% !important;
+
+	}
+
+}

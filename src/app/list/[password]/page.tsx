@@ -21,9 +21,9 @@ export default async function ListPage({ params }: { params: Promise<{ password:
 
 ${posts.length}件のページがあります。
 
-| パス | ページ名 | 操作 |
-| --- | --- | --- |
-${posts.map((post) => `| \`/course/${post.courseId}/${post.path}\` | ${(post.content.match(/^# (.*)/) || ["", "Untitled"])![1]} | [表示](/course/${post.courseId}/${post.path}) [編集](/editor/${post.courseId}/${post.path}) [移動](/move/${post.courseId}/${post.path}) [削除](/delete/${post.courseId}/${post.path}) |`).join("\n")}
+| ID | パス | ページ名 | 短い名前 | 操作 |
+| -- | --- | --- | --- | --- |
+${posts.map((post) => `| ${post.id} | \`/course/${post.courseId}/${post.path}\` | ${(post.content.match(/^# (.*)/) || ["", "Untitled"])![1]} | ${post.short_name} | [表示](/course/${post.courseId}/${post.path}) [編集](/editor/${post.courseId}/${post.path}) [移動](/move/${post.courseId}/${post.path}) [削除](/delete/${post.courseId}/${post.path}) |`).join("\n")}
 `} />
 		</div>
 	)

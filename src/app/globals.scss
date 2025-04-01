@@ -92,3 +92,9 @@ nav {
 	}
 
 }
+
+body:has(*.no-nav) nav {
+
+	display: none;
+
+}

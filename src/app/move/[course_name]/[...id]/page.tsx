@@ -1,4 +1,3 @@
-import Markdown from "@/components/markdown";
 import prisma from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 
@@ -28,11 +27,19 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 
 						"use server";
 
+						const postId = formData.get("postid");
+
+						if (typeof postId !== "string" || postId === "") {
+
+							redirect(`/move/${course_name}/${id.join("/")}?error=1`);
+
+						}
+
 						if (formData.get("password") === process.env.ROOT_PASSWORD) {
 
 							await prisma.post.update({
 								where: {
-									id: data.id,
+									id: postId,
 								},
 								data: {
 									courseId: formData.get("target_course") as string,
@@ -40,7 +47,7 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 								}
 							});
 
-							redirect(`/list/${course_name}?success=1`);
+							redirect(`/list/${formData.get("password")}?success=1`);
 
 						} else {
 
@@ -51,6 +58,8 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 					}
 				}
 			>
+
+				<input type="hidden" name="postid" value={data ? data.id : ""} />
 
 				<input type="password" name="password" placeholder="パスワード" />
 				<input type="text" name="target_course" placeholder="移動先コース" defaultValue={data.courseId} />

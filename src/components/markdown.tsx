@@ -239,8 +239,6 @@ export const mdit = markdownit({
     if (lang && hljs.getLanguage(lang)) {
 
       try {
-        console.log(hljs.highlight(str, { language: lang, ignoreIllegals: true }).value);
-
         return `<pre class="hljs ${showRow ? "show-row" : ""}"><code>`
           + hljs.highlight(str, { language: lang, ignoreIllegals: true }).value.replace(/^/gm, '<span class="row-value"><span class="row-number"></span>').replace(/$/gm, '</span>')
           + '</code></pre>';

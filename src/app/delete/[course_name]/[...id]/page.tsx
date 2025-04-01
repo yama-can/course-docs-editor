@@ -28,11 +28,19 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 
 						"use server";
 
+						const postId = formData.get("postid");
+
+						if (typeof postId !== "string" || postId === "") {
+
+							redirect(`/delete/${course_name}/${id.join("/")}?error=1`);
+
+						}
+
 						if (formData.get("password") === process.env.ROOT_PASSWORD) {
 
 							await prisma.post.delete({
 								where: {
-									id: data.id,
+									id: postId,
 								},
 							});
 
@@ -47,6 +55,8 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 					}
 				}
 			>
+
+				<input type="hidden" name="postid" value={data ? data.id : ""} />
 
 				<input type="password" name="password" placeholder="パスワード" />
 

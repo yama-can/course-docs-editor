@@ -8,9 +8,34 @@ datasource db {
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  courseId  String
-  path      String
-  content   String
-  published Boolean  @default(false)
+  id              String   @id @default(uuid())
+  courseId        String
+  path            String
+  short_name      String   @default("Untitled")
+  content         String
+  published       Boolean  @default(false)
+  requireing      String[] @default([])
+  milestone_delay Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  doc_level       level    @default(overview)
+}
+
+enum level {
+  overview
+  beginner
+  beginner_intermediate
+  intermediate
+  intermediate_advanced
+  advanced
+  advanced_expert
+  expert
+  expert_master
+  master
+  master_grandmaster
+  grandmaster
+  grandmaster_legend
+  legend
+  legend_immortal
+  immortal
 }
