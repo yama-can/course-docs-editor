@@ -25,6 +25,14 @@ export const mdit = markdownit({
 
     }
 
+    if (lang == "details") {
+
+      const lines = str.split("\n");
+
+      return `<details><summary>${lines[0]}</summary>${lines.slice(1).join("\n")}</details>`;
+
+    }
+
     // グラフの場合
 
     const graph = lang.match(/^graph\.(.*)$/);
