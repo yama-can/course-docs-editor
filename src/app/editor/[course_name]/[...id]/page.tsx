@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import Editor from "./editor";
 import prisma from "@/lib/db";
+import { levels_data } from "@/components/levels";
+import { level as level_type } from "@prisma/client";
 
 export default async function EditorPage({ params, searchParams }: {
 	params: Promise<{ course_name: string, id: string[] }>,
@@ -31,6 +33,7 @@ export default async function EditorPage({ params, searchParams }: {
 					const parents = data.get("parents");
 					const postId = data.get("postid");
 					const hasData = data.get("postid") != "";
+					const level = data.get("level");
 
 					if (password != process.env.ROOT_PASSWORD) {
 
@@ -38,7 +41,7 @@ export default async function EditorPage({ params, searchParams }: {
 
 					}
 
-					if (typeof short_name !== "string" || typeof parents !== "string" || typeof postId !== "string") {
+					if (typeof short_name !== "string" || typeof parents !== "string" || typeof postId !== "string" || typeof level !== "string") {
 
 						redirect(`/editor/${course_name}/${id.join("/")}?initialContent=${encodeURIComponent(initialContent)}`);
 
@@ -62,6 +65,7 @@ export default async function EditorPage({ params, searchParams }: {
 								content,
 								short_name,
 								requireing: parents.split(",").map((x) => x.trim()).filter((x) => x.length > 0),
+								doc_level: level as level_type,
 							}
 						});
 
@@ -83,6 +87,7 @@ export default async function EditorPage({ params, searchParams }: {
 								path: id.join("/"),
 								content,
 								short_name,
+								doc_level: level as level_type,
 							}
 						});
 
@@ -139,6 +144,43 @@ export default async function EditorPage({ params, searchParams }: {
 					defaultValue={(data ? data.requireing.join(",") : "")}
 					required
 				/>
+
+				<select
+					name="level"
+					defaultValue={(data ? data.doc_level : "")}
+					required
+				>
+
+					<option value="">レベル</option>
+
+					<hr />
+
+					{
+						(() => {
+
+							const res = [];
+
+							let i = 0;
+
+							for (const level in levels_data) {
+
+								const data = levels_data[level as keyof typeof levels_data];
+
+								res.push(
+									<option key={i++} value={level}>
+										{data.lang_ja}
+									</option>
+								)
+
+							}
+
+							return res;
+
+						})()
+					}
+
+				</select>
+
 
 				<div
 					style={{
