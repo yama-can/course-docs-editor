@@ -71,6 +71,12 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 
 		positions[i] = { x: depth[list[i].id] * 500, y: height[list[i].id] * 150 };
 
+		if (!depth[list[i].id]) {
+
+			continue;
+
+		}
+
 		depthMax = Math.max(depthMax, depth[list[i].id]);
 		colMax = Math.max(colMax, height[list[i].id]);
 
@@ -159,17 +165,18 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 			</div>
 			<svg
 				style={{
-					width: "100%",
-					height: "calc(100vh - 6rem)",
+					width: "calc(100% - 8rem)",
+					height: "calc(100% - 8rem)",
+					padding: "4rem",
 					position: "absolute",
-					transform: `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`,
+					transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
 				}}
 				viewBox={`0 0 ${(depthMax + 1) * 500 - 300} ${(colMax + 1) * 150 - 50}`}
 				preserveAspectRatio="xMidYMid meet"
 				xmlns="http://www.w3.org/2000/svg"
 				className="no-nav no-padding no-scrollbar"
 			>
-
+				
 				{
 					list.map((post, i) => {
 
