@@ -164,7 +164,7 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 					position: "absolute",
 					transform: `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`,
 				}}
-				viewBox={`0 0 ${(depthMax + 1) * 500 - 300} ${colMax * 150 - 50}`}
+				viewBox={`0 0 ${(depthMax + 1) * 500 - 300} ${(colMax + 1) * 150 - 50}`}
 				preserveAspectRatio="xMidYMid meet"
 				xmlns="http://www.w3.org/2000/svg"
 				className="no-nav no-padding no-scrollbar"
