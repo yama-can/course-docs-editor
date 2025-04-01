@@ -147,7 +147,7 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 					e.stopPropagation();
 
 					setOffsetX(offsetX + e.deltaX);
-					setOffsetY(offsetY + e.deltaY);
+					setOffsetY(offsetY - e.deltaY);
 
 				}
 
