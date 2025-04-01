@@ -142,7 +142,6 @@ export default async function EditorPage({ params, searchParams }: {
 					placeholder="先に読むべきページID（カンマ区切り）"
 					name="parents"
 					defaultValue={(data ? data.requireing.join(",") : "")}
-					required
 				/>
 
 				<select
