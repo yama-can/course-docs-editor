@@ -7,66 +7,72 @@ import 'material-symbols';
 import style from "./milestone.module.scss";
 import { levels_data } from "@/components/levels";
 
-export default function View({ list, course_name }: { list: Post[], course_name: string }) {
+export default function View({ list, course_name, root_page }: { list: Omit<Post, "content">[], course_name: string, root_page: string }) {
 
-	const checked = Array(list.length).fill(false);
-	const depth = Array(list.length).fill(0);
-
-	// 深さを DFS
-	function dfs(i: number) {
-
-		const post = list[i];
-
-		let maxima = -1;
-
-		for (const child of post.requireing) {
-
-			const childIndex = list.findIndex((post) => post.id === child);
-
-			if (checked[childIndex]) {
-
-				maxima = Math.max(depth[childIndex], maxima);
-				continue;
-
-			}
-
-			checked[childIndex] = true;
-
-			maxima = Math.max(dfs(childIndex), maxima);
-
-		}
-
-		return depth[i] = maxima + 1 + post.milestone_delay;
-
-	}
+	const reversed_graph: { [key: string]: string[] } = {};
 
 	for (let i = 0; i < list.length; i++) {
 
-		if (checked[i]) {
+		for (const child of list[i].requireing) {
 
-			continue;
+			reversed_graph[child] = reversed_graph[child] || [];
+
+			reversed_graph[child].push(list[i].id);
 
 		}
 
-		checked[i] = true;
+	}
 
-		dfs(i);
+	const depth: { [key: string]: number } = {};
+	const height: { [key: string]: number } = {};
+	const seen: { [key: string]: boolean } = {};
+
+	// 戻り値は高さ
+	function dfs(i: string, now_depth: number, parent_height: number) {
+
+		if (depth[i] || depth[i] >= now_depth) {
+
+			return height[i];
+
+		}
+
+		seen[i] = true;
+
+		let now_height = height[i] = parent_height;
+
+		depth[i] = now_depth;
+
+		if (!reversed_graph[i]) {
+
+			return now_height;
+
+		}
+
+		for (const child of reversed_graph[i]) {
+
+			now_height = dfs(child, now_depth + 1, now_height);
+
+			now_height++;
+
+		}
+
+		return now_height;
 
 	}
 
+	dfs(root_page, 0, 0);
+
 	const positions = Array(list.length).fill({ x: 0, y: 0 });
 
-	const depthCount = Array(list.length).fill(0);
 	let depthMax = 0;
 	let colMax = 0;
 
 	for (let i = 0; i < list.length; i++) {
 
-		positions[i] = { x: depth[i] * 500, y: depthCount[depth[i]] * 150 };
-		depthCount[depth[i]]++;
+		positions[i] = { x: depth[list[i].id] * 500, y: height[list[i].id] * 150 };
 
-		depthMax = Math.max(depthMax, depth[i]);
-		colMax = Math.max(colMax, depthCount[depth[i]]);
+		depthMax = Math.max(depthMax, depth[list[i].id]);
+		colMax = Math.max(colMax, height[list[i].id]);
 
 	}
 
@@ -127,8 +133,6 @@ export default function View({ list, course_name }: { list: Post[], course_name:
 					e.preventDefault();
 					e.stopPropagation();
 
-					console.log("zoom");
-
 					setZoom(Math.max(0.1, Math.min(10, zoom + (e.deltaY > 0 ? -0.1 : 0.1))));
 
 				} else {
@@ -169,7 +173,19 @@ export default function View({ list, course_name }: { list: Post[], course_name:
 				{
 					list.map((post, i) => {
 
-						return post.requireing.map((child, j) => {
+						if (!seen[post.id]) {
+
+							return null;
+
+						}
+
+						if (!reversed_graph[post.id]) {
+
+							return null;
+
+						}
+
+						return reversed_graph[post.id].map((child, j) => {
 
 							const childIndex = list.findIndex((post) => post.id === child);
 
@@ -180,7 +196,7 @@ export default function View({ list, course_name }: { list: Post[], course_name:
 							}
 
 							return (
-								<line key={`${i}-${j}`} x1={positions[i].x} y1={positions[i].y + 50} x2={positions[childIndex].x + 200} y2={positions[childIndex].y + 50} stroke="black" />
+								<line key={`${i}-${j}`} x1={positions[childIndex].x} y1={positions[childIndex].y + 50} x2={positions[i].x + 200} y2={positions[i].y + 50} stroke="black" />
 							)
 
 						});
@@ -190,6 +206,12 @@ export default function View({ list, course_name }: { list: Post[], course_name:
 
 				{
 					positions.map((position, i) => {
+
+						if (!seen[list[i].id]) {
+
+							return null;
+
+						}
 
 						const level_data = levels_data[list[i].doc_level];
 
