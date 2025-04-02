@@ -13,3 +13,23 @@ body:has(.no-padding) {
 	}
 
 }
+
+.course-layout-header {
+
+	position: fixed;
+	right: 2rem;
+	top: 0;
+	line-height: 5rem;
+	z-index: 2000;
+
+}
+
+body:has(.no-nav) {
+
+	.course-layout-header {
+
+		display: none;
+
+	}
+
+}
