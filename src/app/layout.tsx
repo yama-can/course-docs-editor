@@ -59,6 +59,12 @@ export default function RootLayout({
 
     <html lang="ja">
 
+      <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      </head>
+
       <body className={readexPro.variable + " " + sourceCodePro.variable + " " + inter.className + " " + inter.variable + " " + consola.variable}>
 
         <nav>

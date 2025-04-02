@@ -1,0 +1,25 @@
+.button-list {
+
+	position: fixed;
+	bottom: 4rem;
+	right: 4rem;
+	z-index: 1000;
+	color: white;
+	user-select: none;
+
+	span {
+
+		font-size: 2rem;
+		cursor: pointer;
+		position: absolute;
+		width: 2.5rem;
+		height: 2.5rem;
+		line-height: 2.5rem;
+		text-align: center;
+		left: 1rem;
+		background: rgba(0, 0, 0, 0.7);
+		border-radius: 0.5rem;
+
+	}
+
+}
