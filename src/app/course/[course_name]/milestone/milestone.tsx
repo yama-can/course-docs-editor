@@ -171,7 +171,7 @@ export default function View({ list, milestones, course_name, root_page }: { lis
 								>
 									<rect x={position.x} y={position.y} width="200" height="100" fill={level_data.bgcolor} stroke={level_data.bgcolor == "#FFFFFF" ? "#000000" : "none"} />
 									<text x={position.x + 100} y={position.y + 100 / 3} textAnchor="middle" dominantBaseline="middle" fill={level_data.color} fontSize="20">
-										{(list[i].short_name || "Untitled")}
+										{(posts[milestone.postId].short_name || "Untitled")}
 									</text>
 									<text x={position.x + 100} y={position.y + 200 / 3} textAnchor="middle" dominantBaseline="middle" fill={level_data.color} fontSize="20">
 										{level_data.lang_ja}
