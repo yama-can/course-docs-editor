@@ -1,86 +1,13 @@
 "use client";
 
-import { Post } from "@prisma/client";
+import { Post, Milestone } from "@prisma/client";
 import { useEffect, useState } from "react";
 import 'material-symbols';
 
 import style from "./milestone.module.scss";
 import { levels_data } from "@/components/levels";
 
-export default function View({ list, course_name, root_page }: { list: Omit<Post, "content">[], course_name: string, root_page: string }) {
-
-	const reversed_graph: { [key: string]: string[] } = {};
-
-	for (let i = 0; i < list.length; i++) {
-
-		for (const child of list[i].requireing) {
-
-			reversed_graph[child] = reversed_graph[child] || [];
-
-			reversed_graph[child].push(list[i].id);
-
-		}
-
-	}
-
-	const depth: { [key: string]: number } = {};
-	const height: { [key: string]: number } = {};
-	const seen: { [key: string]: boolean } = {};
-
-	// 戻り値は高さ
-	function dfs(i: string, now_depth: number, parent_height: number) {
-
-		if (depth[i] || depth[i] >= now_depth) {
-
-			return height[i];
-
-		}
-
-		seen[i] = true;
-
-		let now_height = height[i] = parent_height;
-
-		depth[i] = now_depth;
-
-		if (!reversed_graph[i]) {
-
-			return now_height;
-
-		}
-
-		for (const child of reversed_graph[i]) {
-
-			now_height = dfs(child, now_depth + 1, now_height);
-
-			now_height++;
-
-		}
-
-		return now_height;
-
-	}
-
-	dfs(root_page, 0, 0);
-
-	const positions = Array(list.length).fill({ x: 0, y: 0 });
-
-	let depthMax = 0;
-	let colMax = 0;
-
-	for (let i = 0; i < list.length; i++) {
-
-		positions[i] = { x: depth[list[i].id] * 500, y: height[list[i].id] * 150 };
-
-		if (!depth[list[i].id]) {
-
-			continue;
-
-		}
-
-		depthMax = Math.max(depthMax, depth[list[i].id]);
-		colMax = Math.max(colMax, height[list[i].id]);
-
-	}
+export default function View({ list, milestones, course_name, root_page }: { list: Omit<Post, "content">[], milestones: Milestone[], course_name: string, root_page: string }) {
 
 	const [dragging, setDragging] = useState(false);
 	const [startX, setStartX] = useState(0);
@@ -155,6 +82,29 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 
 	});
 
+	const positions: { [key: string]: { x: number, y: number } } = {};
+	const posts: { [key: string]: Omit<Post, "content"> } = {};
+
+	for (const post of list) {
+
+		posts[post.id] = post;
+
+	}
+
+	let depthMax = 0, colMax = 0;
+
+	for (const milestone of milestones) {
+
+		positions[milestone.postId] = {
+			x: milestone.x * 500,
+			y: milestone.y * 150,
+		};
+
+		depthMax = Math.max(depthMax, milestone.x);
+		colMax = Math.max(colMax, milestone.y);
+
+	}
+
 	return (
 		<div>
 			<div className={style["button-list"]}>
@@ -169,41 +119,34 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 					height: "calc(100% - 8rem)",
 					padding: "4rem",
 					position: "absolute",
-					transform: `scale(${zoom}) translate(${offsetX}px, ${offsetY}px)`,
+					transform: `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`,
 				}}
 				viewBox={`0 0 ${(depthMax + 1) * 500 - 300} ${(colMax + 1) * 150 - 50}`}
 				preserveAspectRatio="xMidYMid meet"
 				xmlns="http://www.w3.org/2000/svg"
 				className="no-nav no-padding no-scrollbar"
 			>
-				
+
 				{
 					list.map((post, i) => {
 
-						if (!seen[post.id]) {
+						if (!positions[post.id]) {
 
 							return null;
 
 						}
 
-						if (!reversed_graph[post.id]) {
 
-							return null;
+						return post.requireing.map((child, j) => {
 
-						}
-
-						return reversed_graph[post.id].map((child, j) => {
-
-							const childIndex = list.findIndex((post) => post.id === child);
-
-							if (childIndex === -1) {
+							if (!positions[child]) {
 
 								return null;
 
 							}
 
 							return (
-								<line key={`${i}-${j}`} x1={positions[childIndex].x} y1={positions[childIndex].y + 50} x2={positions[i].x + 200} y2={positions[i].y + 50} stroke="black" />
+								<line key={`${i}-${j}`} x1={positions[child].x} y1={positions[child].y + 50} x2={positions[post.id].x + 200} y2={positions[post.id].y + 50} stroke="black" />
 							)
 
 						});
@@ -212,15 +155,11 @@ export default function View({ list, course_name, root_page }: { list: Omit<Post
 				}
 
 				{
-					positions.map((position, i) => {
+					milestones.map((milestone, i) => {
 
-						if (!seen[list[i].id]) {
+						const level_data = levels_data[posts[milestone.postId].doc_level];
 
-							return null;
-
-						}
-
-						const level_data = levels_data[list[i].doc_level];
+						const position = Object.assign({}, positions[milestone.postId]);
 
 						return (
 							<g key={i}>

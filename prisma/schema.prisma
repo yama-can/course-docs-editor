@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Post {
-  id              String   @id @default(uuid())
+  id              String      @id @default(uuid())
   courseId        String
   path            String
-  short_name      String   @default("Untitled")
+  short_name      String      @default("Untitled")
   content         String
-  published       Boolean  @default(false)
-  requireing      String[] @default([])
-  milestone_delay Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  doc_level       level    @default(overview)
+  published       Boolean     @default(false)
+  requireing      String[]    @default([])
+  milestone_delay Int         @default(0)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  doc_level       level       @default(overview)
+  Milestone       Milestone[]
 }
 
 enum level {
@@ -38,4 +39,13 @@ enum level {
   legend
   legend_immortal
   immortal
+}
+
+model Milestone {
+  id       String @id @default(uuid())
+  courseId String
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id])
+  x        Int
+  y        Int
 }
