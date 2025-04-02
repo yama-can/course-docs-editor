@@ -15,6 +15,8 @@ pre.hljs {
 	padding: .3rem;
 	font-size: .9rem;
 	line-height: 1.5;
+	overflow-x: auto;
+	width: 100%;
 
 	* {
 
@@ -31,6 +33,12 @@ pre.hljs {
 	.hljs-comment {
 
 		font-style: normal;
+
+	}
+
+	details {
+
+		font-size: 24pt;
 
 	}
 

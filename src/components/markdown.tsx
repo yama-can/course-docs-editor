@@ -29,7 +29,7 @@ export const mdit = markdownit({
 
       const lines = str.split("\n");
 
-      return `<details><summary>${lines[0]}</summary>${lines.slice(1).join("\n")}</details>`;
+      return `<details><summary>${lines[0]}</summary>${mdit.render(lines.slice(1).join("\n"))}</details>`;
 
     }
 
