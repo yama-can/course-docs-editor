@@ -164,7 +164,7 @@ export default function View({ list, milestones, course_name, root_page }: { lis
 						return (
 							<g key={i}>
 								<a
-									href={`/course/${course_name}/${list[i].path}`}
+									href={`/course/${course_name}/${posts[milestone.postId].path}`}
 									target="_blank"
 									rel="noopener noreferrer"
 									style={{ userSelect: "none" }}
