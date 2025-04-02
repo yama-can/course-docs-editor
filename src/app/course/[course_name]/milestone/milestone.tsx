@@ -146,7 +146,7 @@ export default function View({ list, milestones, course_name, root_page }: { lis
 							}
 
 							return (
-								<line key={`${i}-${j}`} x1={positions[child].x} y1={positions[child].y + 50} x2={positions[post.id].x + 200} y2={positions[post.id].y + 50} stroke="black" />
+								<line key={`${i}-${j}`} x1={positions[child].x + 200} y1={positions[child].y + 50} x2={positions[post.id].x} y2={positions[post.id].y + 50} stroke="black" />
 							)
 
 						});
