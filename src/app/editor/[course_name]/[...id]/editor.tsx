@@ -3,12 +3,14 @@
 import { mdit } from "@/components/markdown";
 import { useRef } from "react";
 
+import styles from "./editor.module.scss";
+
 export default function Editor({ initialValue }: { initialValue: string }) {
 
 	const ref = useRef<HTMLDivElement>(null);
 
 	return (
-		<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", height: "calc(100vh - 5rem - 4rem - 2px)", border: "1px solid #ccc", borderRadius: "0.5rem", overflow: "hidden" }}>
+		<div className={`no-pad ${styles.editor}`}>
 
 			<div style={{ height: "calc(100vh - 5rem - 4rem - 2px)", width: "100%" }}>
 

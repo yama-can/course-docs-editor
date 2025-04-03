@@ -1,0 +1,36 @@
+.editor {
+
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	height: calc(100vh - 5rem - 4rem - 2px);
+	border: 1px solid #ccc;
+	border-radius: 0.5rem;
+	overflow: hidden;
+
+}
+
+.editor-header {
+
+	input,
+	select,
+	button {
+
+		width: 20em;
+
+	}
+
+	button {
+
+		background: blue;
+		color: white;
+		border: none;
+		border-radius: 0.5rem;
+		cursor: pointer;
+		font-size: 1rem;
+		margin: 0;
+		width: 20em;
+
+	}
+
+}

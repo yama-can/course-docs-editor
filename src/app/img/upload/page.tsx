@@ -1,15 +1,17 @@
+import WaitLogin from "@/components/wait-login";
 import { randomUUID } from "crypto";
 import fs from "fs";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import path from "path";
 
-export default async function UploadPage({
-	searchParams,
-}: {
-	searchParams: Promise<{ error?: string }>;
-}) {
+export default async function UploadPage() {
 
-	const { error } = await searchParams;
+	if ((await cookies()).get("CK_PASSWORD")?.value !== process.env.ROOT_PASSWORD) {
+
+		return <WaitLogin />;
+
+	}
 
 	return (
 		<form
@@ -18,7 +20,7 @@ export default async function UploadPage({
 
 					"use server";
 
-					const password = data.get("password") as string;
+					const password = (await cookies()).get("CK_PASSWORD")?.value || "";
 
 					if (password !== process.env.ROOT_PASSWORD) {
 
@@ -47,9 +49,7 @@ export default async function UploadPage({
 
 		>
 			<input type="file" name="file" accept="image/png, image/jpeg, image/jpg" />
-			<input type="password" name="password" placeholder="password" />
 			<button type="submit">Upload</button>
-			{error == "1" && <p style={{ color: "red" }}>パスワードが間違っています。</p>}
 		</form>
 	)
 

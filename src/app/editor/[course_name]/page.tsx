@@ -3,6 +3,8 @@ import Editor from "./[...id]/editor";
 import prisma from "@/lib/db";
 import { levels_data } from "@/components/levels";
 import { level as level_type } from "@prisma/client";
+import { cookies } from "next/headers";
+import WaitLogin from "@/components/wait-login";
 
 export default async function EditorPage({ params, searchParams }: {
 	params: Promise<{ course_name: string }>,
@@ -10,6 +12,12 @@ export default async function EditorPage({ params, searchParams }: {
 		initialContent: string,
 	}>
 }) {
+
+	if ((await cookies()).get("CK_PASSWORD")?.value !== process.env.ROOT_PASSWORD) {
+
+		return <WaitLogin />;
+
+	}
 
 	const { course_name } = await params;
 	const { initialContent } = await searchParams;
@@ -28,7 +36,7 @@ export default async function EditorPage({ params, searchParams }: {
 
 					"use server";
 
-					const password = data.get("password");
+					const password = (await cookies()).get("CK_PASSWORD")?.value || "";
 					const short_name = data.get("short_name");
 					const parents = data.get("parents");
 					const hasData = data.get("hasData");
@@ -113,19 +121,6 @@ export default async function EditorPage({ params, searchParams }: {
 					placeholder="短い名前"
 					name="short_name"
 					defaultValue={(data ? data.short_name : "")}
-					required
-				/>
-
-				<input
-					type="password"
-					style={{
-						display: "inline-block",
-						margin: "1rem",
-						height: "2rem",
-						padding: "0 .5rem"
-					}}
-					placeholder="パスワード"
-					name="password"
 					required
 				/>
 

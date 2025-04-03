@@ -1,21 +1,22 @@
 import Markdown from "@/components/markdown";
+import WaitLogin from "@/components/wait-login";
 import prisma from "@/lib/db";
-import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default async function ListPage({ params }: { params: Promise<{ password: string }> }) {
+export default async function ListPage() {
 
-	const { password } = await params;
+	const password = (await cookies()).get("CK_PASSWORD")?.value || "";
 
 	if (password != process.env.ROOT_PASSWORD) {
 
-		notFound();
+		return <WaitLogin />;
 
 	}
 
 	const posts = await prisma.post.findMany();
 
 	return (
-		<div style={{ minWidth: "400px", width: "55%", overflowWrap: "break-word", margin: "0 auto" }}>
+		<div>
 			<Markdown value={`
 # ページ一覧
 

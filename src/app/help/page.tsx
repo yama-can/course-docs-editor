@@ -1,7 +1,7 @@
 export default function HelpPage() {
 
 	return (
-		<div style={{ minWidth: "400px", width: "55%", overflowWrap: "break-word", margin: "0 auto" }}>
+		<div>
 
 			<h1>ヘルプ</h1>
 

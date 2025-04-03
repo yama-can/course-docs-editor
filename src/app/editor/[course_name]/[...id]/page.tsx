@@ -3,6 +3,10 @@ import Editor from "./editor";
 import prisma from "@/lib/db";
 import { levels_data } from "@/components/levels";
 import { level as level_type } from "@prisma/client";
+import { cookies } from "next/headers";
+import WaitLogin from "@/components/wait-login";
+
+import styles from "./editor.module.scss";
 
 export default async function EditorPage({ params, searchParams }: {
 	params: Promise<{ course_name: string, id: string[] }>,
@@ -10,6 +14,12 @@ export default async function EditorPage({ params, searchParams }: {
 		initialContent: string,
 	}>
 }) {
+
+	if ((await cookies()).get("CK_PASSWORD")?.value !== process.env.ROOT_PASSWORD) {
+
+		return <WaitLogin />;
+
+	}
 
 	const { course_name, id } = await params;
 	const { initialContent } = await searchParams;
@@ -28,7 +38,7 @@ export default async function EditorPage({ params, searchParams }: {
 
 					"use server";
 
-					const password = data.get("password");
+					const password = (await cookies()).get("CK_PASSWORD")?.value || "";
 					const short_name = data.get("short_name");
 					const parents = data.get("parents");
 					const postId = data.get("postid");
@@ -102,16 +112,10 @@ export default async function EditorPage({ params, searchParams }: {
 
 			<input type="hidden" name="postid" value={data ? data.id : ""} />
 
-			<div style={{ height: "4rem" }}>
+			<div style={{ height: "4rem" }} className={styles["editor-header"]}>
 
 				<input
 					type="text"
-					style={{
-						display: "inline-block",
-						margin: "1rem",
-						height: "2rem",
-						padding: "0 .5rem"
-					}}
 					placeholder="短い名前"
 					name="short_name"
 					defaultValue={(data ? data.short_name : "")}
@@ -119,27 +123,7 @@ export default async function EditorPage({ params, searchParams }: {
 				/>
 
 				<input
-					type="password"
-					style={{
-						display: "inline-block",
-						margin: "1rem",
-						height: "2rem",
-						padding: "0 .5rem"
-					}}
-					placeholder="パスワード"
-					name="password"
-					required
-				/>
-
-				<input
 					type="text"
-					style={{
-						display: "inline-block",
-						margin: "1rem",
-						height: "2rem",
-						padding: "0 .5rem",
-						width: "20rem",
-					}}
 					placeholder="先に読むべきページID（カンマ区切り）"
 					name="parents"
 					defaultValue={(data ? data.requireing.join(",") : "")}
@@ -191,17 +175,6 @@ export default async function EditorPage({ params, searchParams }: {
 				>
 
 					<button
-						style={{
-							background: "blue",
-							color: "white",
-							border: "none",
-							borderRadius: "0.5rem",
-							cursor: "pointer",
-							fontSize: "1rem",
-							height: "2rem",
-							lineHeight: "2rem",
-							margin: "1rem",
-						}}
 						type="submit"
 					>
 						作成・編集

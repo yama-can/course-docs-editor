@@ -73,11 +73,11 @@ export default function RootLayout({
 
         </nav>
 
-        <div className={layout.main}>
+        <main className={layout.main}>
 
           {children}
 
-        </div>
+        </main>
 
       </body>
 

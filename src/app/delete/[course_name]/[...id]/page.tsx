@@ -1,8 +1,15 @@
-import Markdown from "@/components/markdown";
+import WaitLogin from "@/components/wait-login";
 import prisma from "@/lib/db";
+import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: Promise<{ course_name: string, id: string[] }> }) {
+
+	if ((await cookies()).get("CK_PASSWORD")?.value !== process.env.ROOT_PASSWORD) {
+
+		return <WaitLogin />;
+
+	}
 
 	const { course_name, id } = await params;
 
@@ -20,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 	}
 
 	return (
-		<div style={{ minWidth: "400px", width: "55%", overflowWrap: "break-word", margin: "0 auto" }}>
+		<div>
 
 			<form
 				action={
@@ -36,7 +43,7 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 
 						}
 
-						if (formData.get("password") === process.env.ROOT_PASSWORD) {
+						if ((await cookies()).get("CK_PASSWORD")?.value === process.env.ROOT_PASSWORD) {
 
 							await prisma.post.delete({
 								where: {
@@ -57,8 +64,12 @@ export default async function Page({ params }: { params: Promise<{ course_name: 
 			>
 
 				<input type="hidden" name="postid" value={data ? data.id : ""} />
+				
+				<h1>本当に削除してもよろしいですか</h1>
 
-				<input type="password" name="password" placeholder="パスワード" />
+				<p>この操作は取り消せません。</p>
+
+				<p>削除するデータのパス: {data.path}</p>
 
 				<button
 					type="submit"

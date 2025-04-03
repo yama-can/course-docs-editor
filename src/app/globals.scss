@@ -95,14 +95,63 @@ nav {
 
 }
 
-body:has(*.no-nav) nav {
+body:has(*.no-nav) {
 
-	display: none;
+	nav {
+
+		display: none;
+
+	}
+
+}
+
+body:not(:has(*.no-nav)):not(:has(*.no-pad)) {
+
+	main {
+
+		min-width: 400px;
+		width: 55%;
+		overflow-wrap: break-word;
+		margin: 0 auto;
+
+	}
 
 }
 
 img {
 
 	max-width: 100%;
+
+}
+
+input,
+button {
+
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border-radius: .5rem;
+	border: 1px solid #aaa;
+	padding: .5rem 1rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	width: 100%;
+	margin-bottom: 1rem;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	&::placeholder {
+
+		color: #aaa;
+
+	}
+
+	&:focus {
+
+		outline: none;
+		border-color: blue;
+
+	}
 
 }
